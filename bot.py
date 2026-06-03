@@ -14,7 +14,7 @@ def is_allowed(message):
     return True
 
 
-@bot.message_handler(commands=["test"])
+@bot.message_handler(func=lambda message: message == "test")
 def test(message):
     if not is_allowed(message):
         return
