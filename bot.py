@@ -30,7 +30,7 @@ def server(message):
     if not is_allowed(message):
         return
     now = datetime.now()
-    bot.send_chat_action(message.chat.id, "печатает")
+    bot.send_chat_action(message.chat.id, "typing")
     time = f"Московское время: {now.hour} часов, {now.minute} минут."
     bot.send_message(message.chat.id, time)
 
@@ -39,7 +39,7 @@ def server(message):
 def disks(message):
     if not is_allowed(message):
         return
-    bot.send_chat_action(message.chat.id, "test")
+    bot.send_chat_action(message.chat.id, "typing")
     time.sleep(5)
     bot.send_message(message.chat.id, "disks info")
 
