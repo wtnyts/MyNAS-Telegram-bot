@@ -11,8 +11,14 @@ def is_allowed(message):
         return False
     return True
 
-@bot.message_handler(commands=['test'])
+
+@bot.message_handler(commands=["test"])
 def test(message):
     if not is_allowed(message):
         return
-    bot.send_message(message.chat.id, 'test message')
+    bot.send_message(message.chat.id, "test message")
+
+
+if __name__ == "__main__":
+    print("Бот запущен")
+    bot.infinity_polling()
