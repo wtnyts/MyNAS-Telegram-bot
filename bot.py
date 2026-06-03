@@ -23,17 +23,28 @@ def test(message):
 
 @bot.message_handler(commands=["time"])
 def test(message):
-    if not is_allowed:
+    if not is_allowed(message):
         return
     now = datetime.now()
     time = f"Московское время: {now.hour} часов, {now.minute} минут."
     bot.send_message(message.chat.id, time)
 
 
-"""
 def main_keyboard():
-    markup = types.KeyboardButton("")
-"""
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
+    button1 = types.KeyboardButton("Тест")
+    button2 = types.KeyboardButton("Время")
+
+    markup.add(button1, button2)
+    return markup
+
+
+@bot.message_handler(commands=["start"])
+def start(message):
+    if not is_allowed(message):
+        return
+    bot.send_message(message.chat.id, "Выберите действие", reply_markup=main_keyboard())
+
 
 if __name__ == "__main__":
     print("Бот запущен")
