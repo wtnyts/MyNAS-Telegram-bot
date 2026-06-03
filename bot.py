@@ -3,7 +3,7 @@ from telebot import types
 from config import ALLOWED_USER_IDs, TELEGRAM_TOKEN
 from datetime import datetime
 import time
-import request
+import requests
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
@@ -16,8 +16,8 @@ def is_allowed(message):
     return True
 
 
-@bot.message_handler(func=lambda message: message.text == "UPS Info")
-def test(message):
+@bot.message_handler(func=lambda message: message.text == "ИБП")
+def ups(message):
     if not is_allowed(message):
         return
     bot.send_chat_action(message.chat.id, "typing")
@@ -25,21 +25,32 @@ def test(message):
     bot.send_message(message.chat.id, "test message")
 
 
-@bot.message_handler(func=lambda message: message.text == "Время")
-def test(message):
+@bot.message_handler(func=lambda message: message.text == "Сервер")
+def server(message):
     if not is_allowed(message):
         return
     now = datetime.now()
+    bot.send_chat_action(message.chat.id, "печатает")
     time = f"Московское время: {now.hour} часов, {now.minute} минут."
     bot.send_message(message.chat.id, time)
 
 
+@bot.message_handler(func=lambda message: message.text == "Диски")
+def disks(message):
+    if not is_allowed(message):
+        return
+    bot.send_chat_action(message.chat.id, "test")
+    time.sleep(5)
+    bot.send_message(message.chat.id, "disks info")
+
+
 def main_keyboard():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
-    button1 = types.KeyboardButton("UPS Info")
-    button2 = types.KeyboardButton("Время")
+    button1 = types.KeyboardButton("Сервер")
+    button2 = types.KeyboardButton("Диски")
+    button3 = types.KeyboardButton("ИБП")
 
-    markup.add(button1, button2)
+    markup.add(button1, button2, button3)
     return markup
 
 
