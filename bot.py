@@ -2,6 +2,8 @@ import telebot
 from telebot import types
 from config import ALLOWED_USER_IDs, TELEGRAM_TOKEN
 from datetime import datetime
+import time
+import request
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
@@ -14,14 +16,16 @@ def is_allowed(message):
     return True
 
 
-@bot.message_handler(func=lambda message: message.text == "Тест")
+@bot.message_handler(func=lambda message: message.text == "UPS Info")
 def test(message):
     if not is_allowed(message):
         return
+    bot.send_chat_action(message.chat.id, "typing")
+    time.sleep(10)
     bot.send_message(message.chat.id, "test message")
 
 
-@bot.message_handler(commands=["time"])
+@bot.message_handler(func=lambda message: message.text == "Время")
 def test(message):
     if not is_allowed(message):
         return
@@ -32,7 +36,7 @@ def test(message):
 
 def main_keyboard():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
-    button1 = types.KeyboardButton("Тест")
+    button1 = types.KeyboardButton("UPS Info")
     button2 = types.KeyboardButton("Время")
 
     markup.add(button1, button2)
