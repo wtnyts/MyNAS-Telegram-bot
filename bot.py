@@ -58,13 +58,13 @@ def server(message):
     ram = get_prometheus_metric(ram_query)
 
     total = "Статус сервера: \n\n"
-    total += f"CPU: {cpu:.1f}%\n" if cpu is not None else f"CPU: нет данных\n"
+    total += f"CPU: **{cpu:.1f}** %\n" if cpu is not None else f"CPU: нет данных\n"
     total += (
-        f"CPU, t: {cpu_temp:.1f} °C\n"
+        f"CPU, t: **{cpu_temp:.1f}** °C\n"
         if cpu_temp is not None
         else f"CPU, t: нет данных\n"
     )
-    total += f"RAM: {ram:.1f}%\n" if ram is not None else f"RAM: нет данных\n"
+    total += f"RAM: **{ram:.1f}** %\n" if ram is not None else f"RAM: нет данных\n"
 
     bot.send_message(message.chat.id, total)
 
@@ -112,28 +112,28 @@ def disks(message):
         a = []
 
         if used is not None:
-            a.append(f"использовано {used:.1f} Gb")
+            a.append(f"использовано **{used:.1f}** Gb")
         else:
-            a.append(f"использовано НЕТ ДАННЫХ")
+            a.append(f"использовано **НЕТ ДАННЫХ**")
 
         if free is not None:
-            a.append(f"свободно {free:.1f} Gb")
+            a.append(f"свободно **{free:.1f}** Gb")
         else:
-            a.append(f"свободно НЕТ ДАННЫХ")
+            a.append(f"свободно **НЕТ ДАННЫХ**")
 
         if total is not None:
-            a.append(f"всего {total:.1f} Gb")
+            a.append(f"всего **{total:.1f}** Gb")
         else:
-            a.append(f"всего НЕТ ДАННЫХ")
+            a.append(f"всего **НЕТ ДАННЫХ**")
 
-        string = f"{name}: " + ", ".join(a) + "\n"
+        string = f"**{name}**: " + ", ".join(a) + "\n"
 
         return string
 
-    total = "Статус дисков:\n\nSSD:\n"
+    total = "**Статус дисков**:\n\n**SSD**:\n"
     total += format_string("Root", root_used, root_free, root_total)
     total += format_string("Docker", docker_used, docker_free, docker_total)
-    total += "\nHDD:\n"
+    total += "\n**HDD**:\n"
     total += format_string(
         "Toshiba 650", hdd_toshiba_used, hdd_toshiba_free, hdd_toshiba_total
     )
