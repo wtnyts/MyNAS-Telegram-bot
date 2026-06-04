@@ -8,37 +8,63 @@ import requests
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 
-def is_allowed(message):
-    user_id = message.from_user.id
-    if user_id not in ALLOWED_USER_IDs:
-        bot.send_message(message.chat.id, "У вас нет доступа!")
-        return False
-    return True
+def restricted(func):
+    def wrapper(message, *args, **kwargs):
+        if message.from_user.id not in ALLOWED_USER_IDs:
+            bot.send_message(message.chat.id, "У вас нет доступа к этому боту!")
+            return
+        return func(message, *args, **kwargs)
+
+    return wrapper
+
+
+def get_prometheus_metric(query):
+    try:
+        response = requests.get(
+            "http://192.168.1.45:9090/api/v1/query", params={"query": query}, timeout=5
+        )
+        if response.status_code == 200:
+            data = response.json()
+            if data["data"]["result"]:
+                value = data["data"]["result"][0]["value"][1]
+                return float(value)
+    except:
+        pass
 
 
 @bot.message_handler(func=lambda message: message.text == "ИБП")
+@restricted
 def ups(message):
-    if not is_allowed(message):
-        return
     bot.send_chat_action(message.chat.id, "typing")
     time.sleep(10)
     bot.send_message(message.chat.id, "test message")
 
 
 @bot.message_handler(func=lambda message: message.text == "Сервер")
+@restricted
 def server(message):
-    if not is_allowed(message):
-        return
+    bot.send_chat_action(message.chat.id, "typing")
+
+    query = '100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)'
+    value = get_prometheus_metric(query)
+
+    if value is not None:
+        bot.send_message(message.chat.id, f"CPU: {int(value)}%")
+    else:
+        bot.send_message(message.chat.id, "Нет информации")
+
+    """
+                                    # Возврат часов
     now = datetime.now()
     bot.send_chat_action(message.chat.id, "typing")
     time = f"Московское время: {now.hour} часов, {now.minute} минут."
     bot.send_message(message.chat.id, time)
+    """
 
 
 @bot.message_handler(func=lambda message: message.text == "Диски")
+@restricted
 def disks(message):
-    if not is_allowed(message):
-        return
     bot.send_chat_action(message.chat.id, "typing")
     time.sleep(5)
     bot.send_message(message.chat.id, "disks info")
@@ -55,9 +81,8 @@ def main_keyboard():
 
 
 @bot.message_handler(commands=["start"])
+@restricted
 def start(message):
-    if not is_allowed(message):
-        return
     bot.send_message(message.chat.id, "Выберите действие", reply_markup=main_keyboard())
 
 
