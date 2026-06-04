@@ -59,19 +59,19 @@ def server(message):
 
     total = "Статус сервера: \n\n"
     total += (
-        f"CPU: <span style='color: #999999;'><b>{cpu:.1f}</b></span> %\n"
+        f"CPU: <span style='color: #999999;'>{cpu:.1f}</span> %\n"
         if cpu is not None
-        else f"CPU: нет данных\n"
+        else "CPU: нет данных\n"
     )
     total += (
-        f"CPU, t: <span style='color: #999999;'><b>{cpu_temp:.1f}</b></span> °C\n"
+        f"CPU, t: <span style='color: #999999;'>{cpu_temp:.1f}</span> °C\n"
         if cpu_temp is not None
-        else f"CPU, t: нет данных\n"
+        else "CPU, t: нет данных\n"
     )
     total += (
-        f"RAM: <span style='color: #999999;'><b>{ram:.1f}</b></span> %\n"
+        f"RAM: <span style='color: #999999;'>{ram:.1f}</span> %\n"
         if ram is not None
-        else f"RAM: нет данных\n"
+        else "RAM: нет данных\n"
     )
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
