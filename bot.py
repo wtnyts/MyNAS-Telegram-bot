@@ -66,7 +66,7 @@ def server(message):
     )
     total += f"RAM: **{ram:.1f}** %\n" if ram is not None else f"RAM: нет данных\n"
 
-    bot.send_message(message.chat.id, total)
+    bot.send_message(message.chat.id, total, parse_mode="Markdown")
 
 
 @bot.message_handler(func=lambda message: message.text == "Диски")
@@ -138,7 +138,7 @@ def disks(message):
         "Toshiba 650", hdd_toshiba_used, hdd_toshiba_free, hdd_toshiba_total
     )
 
-    bot.send_message(message.chat.id, total)
+    bot.send_message(message.chat.id, total, parse_mode="Markdown")
 
 
 def main_keyboard():
