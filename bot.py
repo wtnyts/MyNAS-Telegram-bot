@@ -53,14 +53,6 @@ def server(message):
     else:
         bot.send_message(message.chat.id, "Нет информации")
 
-    """
-                                    # Возврат часов
-    now = datetime.now()
-    bot.send_chat_action(message.chat.id, "typing")
-    time = f"Московское время: {now.hour} часов, {now.minute} минут."
-    bot.send_message(message.chat.id, time)
-    """
-
 
 @bot.message_handler(func=lambda message: message.text == "Диски")
 @restricted
