@@ -58,15 +58,15 @@ def server(message):
     ram = get_prometheus_metric(ram_query)
 
     total = "Статус сервера: \n\n"
-    total += f"CPU: **{cpu:.1f}** %\n" if cpu is not None else f"CPU: нет данных\n"
+    total += f"CPU: <b>{cpu:.1f}</b> %\n" if cpu is not None else f"CPU: нет данных\n"
     total += (
-        f"CPU, t: **{cpu_temp:.1f}** °C\n"
+        f"CPU, t: <b>{cpu_temp:.1f}</b> °C\n"
         if cpu_temp is not None
         else f"CPU, t: нет данных\n"
     )
-    total += f"RAM: **{ram:.1f}** %\n" if ram is not None else f"RAM: нет данных\n"
+    total += f"RAM: <b>{ram:.1f}</b> %\n" if ram is not None else f"RAM: нет данных\n"
 
-    bot.send_message(message.chat.id, total, parse_mode="Markdown")
+    bot.send_message(message.chat.id, total, parse_mode="HTML")
 
 
 @bot.message_handler(func=lambda message: message.text == "Диски")
@@ -112,33 +112,33 @@ def disks(message):
         a = []
 
         if used is not None:
-            a.append(f"использовано **{used:.1f}** Gb")
+            a.append(f"использовано <b>{used:.1f}</b> Gb")
         else:
-            a.append(f"использовано **НЕТ ДАННЫХ**")
+            a.append(f"использовано <b>НЕТ ДАННЫХ</b>")
 
         if free is not None:
-            a.append(f"свободно **{free:.1f}** Gb")
+            a.append(f"свободно <b>{free:.1f}</b> Gb")
         else:
-            a.append(f"свободно **НЕТ ДАННЫХ**")
+            a.append(f"свободно <b>НЕТ ДАННЫХ</b>")
 
         if total is not None:
-            a.append(f"всего **{total:.1f}** Gb")
+            a.append(f"всего <b>{total:.1f}</b> Gb")
         else:
-            a.append(f"всего **НЕТ ДАННЫХ**")
+            a.append(f"всего <b>НЕТ ДАННЫХ</b>")
 
-        string = f"**{name}**: " + ", ".join(a) + "\n"
+        string = f"<b>{name}</b>: " + ", ".join(a) + "\n"
 
         return string
 
-    total = "**Статус дисков**:\n\n**SSD**:\n"
+    total = "<b>Статус дисков</b>:\n\n<b>SSD</b>:\n"
     total += format_string("Root", root_used, root_free, root_total)
     total += format_string("Docker", docker_used, docker_free, docker_total)
-    total += "\n**HDD**:\n"
+    total += "\n<b>HDD</b>:\n"
     total += format_string(
         "Toshiba 650", hdd_toshiba_used, hdd_toshiba_free, hdd_toshiba_total
     )
 
-    bot.send_message(message.chat.id, total, parse_mode="Markdown")
+    bot.send_message(message.chat.id, total, parse_mode="HTML")
 
 
 def main_keyboard():
