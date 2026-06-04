@@ -45,21 +45,28 @@ def ups(message):
 def server(message):
     bot.send_chat_action(message.chat.id, "typing")
 
-    query = '100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)'
-    value = get_prometheus_metric(query)
+    cpu_query = '100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)'
+    cpu_temp_query = (
+        'node_hwmon_temp_celsius{chip="platform_coretemp_0", sensor="temp1"}'
+    )
+    ram_query = (
+        "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100"
+    )
 
-    if value is not None:
-        bot.send_message(message.chat.id, f"CPU: {int(value)}%")
-    else:
-        bot.send_message(message.chat.id, "Нет информации")
+    cpu = get_prometheus_metric(cpu_query)
+    cpu_temp = get_prometheus_metric(cpu_temp_query)
+    ram = get_prometheus_metric(ram_query)
 
-    """
-                                    # Возврат часов
-    now = datetime.now()
-    bot.send_chat_action(message.chat.id, "typing")
-    time = f"Московское время: {now.hour} часов, {now.minute} минут."
-    bot.send_message(message.chat.id, time)
-    """
+    total = "Статус сервера: \n\n"
+    total += f"CPU: {cpu:.1f}%\n" if cpu is not None else f"CPU: нет данных\n"
+    total += (
+        f"CPU, t: {cpu_temp:.1f} °C\n"
+        if cpu_temp is not None
+        else f"CPU, t: нет данных\n"
+    )
+    total += f"RAM: {ram:.1f}%\n" if ram is not None else f"RAM: нет данных\n"
+
+    bot.send_message(message.chat.id, total)
 
 
 @bot.message_handler(func=lambda message: message.text == "Диски")
