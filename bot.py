@@ -58,13 +58,21 @@ def server(message):
     ram = get_prometheus_metric(ram_query)
 
     total = "Статус сервера: \n\n"
-    total += f"CPU: <b>{cpu:.1f}</b> %\n" if cpu is not None else f"CPU: нет данных\n"
     total += (
-        f"CPU, t: <b>{cpu_temp:.1f}</b> °C\n"
+        f"CPU: <span style='color: #999999;'><b>{cpu:.1f}</b></span> %\n"
+        if cpu is not None
+        else f"CPU: нет данных\n"
+    )
+    total += (
+        f"CPU, t: <span style='color: #999999;'><b>{cpu_temp:.1f}</b></span> °C\n"
         if cpu_temp is not None
         else f"CPU, t: нет данных\n"
     )
-    total += f"RAM: <b>{ram:.1f}</b> %\n" if ram is not None else f"RAM: нет данных\n"
+    total += (
+        f"RAM: <span style='color: #999999;'><b>{ram:.1f}</b></span> %\n"
+        if ram is not None
+        else f"RAM: нет данных\n"
+    )
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
 
