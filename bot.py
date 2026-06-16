@@ -90,14 +90,14 @@ class Server:
         'node_hwmon_temp_celsius{chip="platform_coretemp_0", sensor="temp1"}'
         )
         self.cpu_temp_query = self.cpu_temp_query if self.cpu_temp_query is not None else "нет данных"
-        return f"CPU: <b>{self.cpu_query}</b> %\nCPU, t: <b>{self.cpu_temp_query}</b> °C\n"
+        return f"CPU: <b>{self.cpu_query:.1f}</b> %\nCPU, t: <b>{self.cpu_temp_query:.1f}</b> °C\n"
 
     def get_ram(self):
         self.ram_query = get_prometheus_metric(
         "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100"
         )
         self.ram_query = self.ram_query if self.ram_query is not None else "нет данных"
-        return f"RAM: <b>{self.ram_query}</b> %"
+        return f"RAM: <b>{self.ram_query:.1f}</b> %"
     
     def format(self):
         return self.get_cpu() + self.get_ram()
