@@ -75,7 +75,7 @@ class Disk:
         total = self.format_size(total)
         used = self.format_size(used)
 
-        return(f"{self.name}: свободно {free}, использовано {used}, всего {total}\n")
+        return(f"<b>{self.name}</b>: использовано <b>{used}</b>, свободно <b>{free}</b>, всего <b>{total}</b>\n")
 
 
 
@@ -90,17 +90,71 @@ class Server:
         'node_hwmon_temp_celsius{chip="platform_coretemp_0", sensor="temp1"}'
         )
         self.cpu_temp_query = self.cpu_temp_query if self.cpu_temp_query is not None else "нет данных"
-        return f"CPU: {self.cpu_query} %\nCPU, t: {self.cpu_temp_query} °C\n"
+        return f"CPU: <b>{self.cpu_query}</b> %\nCPU, t: <b>{self.cpu_temp_query}</b> °C\n"
 
     def get_ram(self):
         self.ram_query = get_prometheus_metric(
         "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100"
         )
         self.ram_query = self.ram_query if self.ram_query is not None else "нет данных"
-        return f"RAM: {self.ram_query} %"
+        return f"RAM: <b>{self.ram_query}</b> %"
     
     def format(self):
         return self.get_cpu() + self.get_ram()
+    
+
+
+class UPS:
+    def __init__(self, name):
+        self.name = name
+
+    def ups_status(self):
+        self.status = get_prometheus_metric("ups_status")
+        if self.status == 0:
+            return "батареи"
+        elif self.status == 1:
+            return "сети"
+        else:
+            return "НЕТ ДАННЫХ"
+        
+    def ups_time(self):
+        self.ups_time = get_prometheus_metric("ups_battery_runtime_seconds")
+        if self.ups_time is None:
+            return "нет данных"
+
+        if self.ups_time < 60:
+            return f"{self.ups_time:.1f} сек."
+        elif self.ups_time < 3600:
+            return f"{self.ups_time/60:.1f} мин."
+        elif self.ups_time < 86400:
+            return f"{self.ups_time/3600:.1f} ч."
+        else:
+            return f"{self.ups_time/86400:.1f} д."
+
+    def ups_charge(self):
+        self.ups_charge = get_prometheus_metric("ups_battery_charge_percent")
+        if self.ups_charge is None:
+            return "нет данных"
+        else:
+            return f"{self.ups_charge}"
+        
+    def ups_load(self):
+        self.ups_load = get_prometheus_metric("ups_load_percent")
+        if self.ups_load is None:
+            return "нет данных"
+        else:
+            return f"{self.ups_load}"
+        
+    def format(self):
+        status = self.ups_status()
+        time = self.ups_time()
+        charge = self.ups_charge()
+        load = self.ups_load()
+
+        return status, time, charge, load
+
+
+
 
 
 @bot.message_handler(func=lambda message: message.text == "Сервер")
@@ -111,22 +165,6 @@ def server(message):
     server_1 = Server("MyNAS")
 
     bot.send_message(message.chat.id, server_1.format(), parse_mode="HTML")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -152,6 +190,20 @@ def disks(message):
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
 
+@bot.message_handler(func=lambda message: message.text == "ИБП")
+@restricted
+def ups(message):
+    bot.send_chat_action(message.chat.id, 'typing')
+    ups_1 = UPS("CyberPower")
+    status, time, charge, load = ups_1.format()
+
+    total = 'Статус <b>ИБП</b>:\n\n'
+    total += f"ИБП работает от <b>{status}</b>\n"
+    total += f"Время от батареи: <b>{time}</b>\n"
+    total += f"Заряд ИБП: <b>{charge}</b> %\n"
+    total += f"Нагрузка: <b>{load}</b> %\n"
+
+    bot.send_message(message.chat.id, total, parse_mode="HTML")
 
 
 
