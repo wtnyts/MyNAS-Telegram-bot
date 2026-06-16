@@ -94,7 +94,7 @@ def disks(message):
     hdd_toshiba_free = get_prometheus_metric(hdd_toshiba_free)
     hdd_toshiba_total = get_prometheus_metric(hdd_toshiba_total)
     hdd_wd_6tb_free = get_prometheus_metric(hdd_wd_6tb_free)
-    hdd_wd_6tb_total = get_prometheus_metric(hdd_toshiba_total)
+    hdd_wd_6tb_total = get_prometheus_metric(hdd_wd_6tb_total)
 
     root_used = (
         root_total - root_free
