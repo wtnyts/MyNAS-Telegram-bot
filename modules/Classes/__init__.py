@@ -1,3 +1,3 @@
-from .disks import disks
-from .server import server
-from .ups import ups
+from .disks import Disk
+from .server import Server
+from .ups import UPS
