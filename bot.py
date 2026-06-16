@@ -146,7 +146,7 @@ def disks(message):
     total += format_string(
         "Toshiba 650 Gb", hdd_toshiba_used, hdd_toshiba_free, hdd_toshiba_total
     )
-    total += format_string("WD 6 Tb", hdd_wd_6tb_used, hdd_wd_6tb_free, hdd_toshiba_total)
+    total += format_string("WD 6 Tb", hdd_wd_6tb_used, hdd_wd_6tb_free, hdd_wd_6tb_total)
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
 
