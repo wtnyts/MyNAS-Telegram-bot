@@ -83,27 +83,36 @@ class Server:
     def __init__(self, name):
         self.name = name
     
-    def get_cpu(self):
-        self.cpu_query = get_prometheus_metric('100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)')
-        self.cpu_query = self.cpu_query if self.cpu_query is not None else "нет данных"
-        self.cpu_temp_query = get_prometheus_metric(
+    def get_cpu_query(self):
+        cpu_query = get_prometheus_metric('100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)')
+        if cpu_query is not None:
+            return f"{cpu_query:.1f}"
+        else:
+            return "нет данных"
+    
+    def get_cpu_temp(self):
+        cpu_temp = get_prometheus_metric(
         'node_hwmon_temp_celsius{chip="platform_coretemp_0", sensor="temp1"}'
         )
-        self.cpu_temp_query = self.cpu_temp_query if self.cpu_temp_query is not None else "нет данных"
-        return f"CPU: <b>{self.cpu_query:.1f}</b> %\nCPU, t: <b>{self.cpu_temp_query:.1f}</b> °C\n"
+        if cpu_temp is not None:
+            return f"{cpu_temp:.1f}"
+        else:
+            return "нет данных"
 
     def get_ram(self):
-        self.ram_query = get_prometheus_metric(
-        "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100"
-        )
-        self.ram_query = self.ram_query if self.ram_query is not None else "нет данных"
-        return f"RAM: <b>{self.ram_query:.1f}</b> %"
+        ram = get_prometheus_metric("(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100")
+        if ram is not None:
+            return f"{ram:.1f}"
+        else:
+            return "нет данных"
     
     def format(self):
-        name = self.name
-        cpu = self.get_cpu()
+
+        cpu_query = self.get_cpu_query()
+        cpu_temp = self.get_cpu_temp()
         ram = self.get_ram()
-        return name, cpu, ram
+
+        return f"Статус сервера <b>{self.name}</b>:\n\nНагрузка на CPU: <b>{cpu_query}%</b>\nТемпература CPU: {cpu_temp} °C\nЗагрузка RAM: {ram} %"
 
 
 class UPS:
@@ -153,9 +162,7 @@ class UPS:
         charge = self.ups_charge()
         load = self.ups_load()
 
-        return status, time, charge, load
-
-
+        return f"Статус ИБП <b>{self.name}</b>:\n\nВремя от батареи: <b>{time}</b>\nЗаряд ИБП: <b>{charge}</b>\nНагрузка: <b>{load}</b>"
 
 
 
@@ -165,14 +172,9 @@ def server(message):
     bot.send_chat_action(message.chat.id, "typing")
 
     server_1 = Server("MyNAS")
-    total = f"Статус <b>сервера</b>:\n\n"
-    name, cpu, ram = server_1.format()
-    
-    total = f"Статус сервера <b>{name}</b>:\n\n"
-    total += cpu
-    total += ram
+    total = server_1.format()
 
-    bot.send_message(message.chat.id, ram, parse_mode="HTML")
+    bot.send_message(message.chat.id, total, parse_mode="HTML")
 
 
 
@@ -203,13 +205,7 @@ def disks(message):
 def ups(message):
     bot.send_chat_action(message.chat.id, 'typing')
     ups_1 = UPS("CyberPower")
-    status, time, charge, load = ups_1.format()
-
-    total = 'Статус <b>ИБП</b>:\n\n'
-    total += f"ИБП работает от <b>{status}</b>\n"
-    total += f"Время от батареи: <b>{time}</b>\n"
-    total += f"Заряд ИБП: <b>{charge}</b> %\n"
-    total += f"Нагрузка: <b>{load}</b> %\n"
+    total = ups_1.format()
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
 
