@@ -121,7 +121,7 @@ class UPS:
 
     def ups_status(self):
         self.status = get_prometheus_metric("ups_status")
-        if self.status == 0:
+        if self.status == 2:
             return "батареи"
         elif self.status == 1:
             return "сети"
