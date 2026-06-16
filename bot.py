@@ -112,7 +112,7 @@ class Server:
         cpu_temp = self.get_cpu_temp()
         ram = self.get_ram()
 
-        return f"Статус сервера <b>{self.name}</b>:\n\nНагрузка на CPU: <b>{cpu_query}%</b>\nТемпература CPU: {cpu_temp} °C\nЗагрузка RAM: {ram} %"
+        return f"Статус сервера <b>{self.name}</b>:\n\nНагрузка на CPU: <b>{cpu_query}%</b>\nТемпература CPU: <b>{cpu_temp}</b> °C\nЗагрузка RAM: <b>{ram}</b> %"
 
 
 class UPS:
@@ -162,7 +162,7 @@ class UPS:
         charge = self.ups_charge()
         load = self.ups_load()
 
-        return f"Статус ИБП <b>{self.name}</b>:\n\nВремя от батареи: <b>{time}</b>\nЗаряд ИБП: <b>{charge}</b>\nНагрузка: <b>{load}</b>"
+        return f"Статус ИБП <b>{self.name}</b>:\n\nВремя от батареи: <b>{time}</b>\nЗаряд ИБП: <b>{charge} %</b>\nНагрузка: <b>{load}</b> %"
 
 
 
