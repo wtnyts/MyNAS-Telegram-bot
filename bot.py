@@ -162,7 +162,7 @@ class UPS:
         charge = self.ups_charge()
         load = self.ups_load()
 
-        return f"Статус ИБП <b>{self.name}</b>:\n\nВремя от батареи: <b>{time}</b>\nЗаряд ИБП: <b>{charge} %</b>\nНагрузка: <b>{load}</b> %"
+        return f"Статус ИБП <b>{self.name}</b>:\n\nИБП работает от {status}\nВремя от батареи: <b>{time}</b>\nЗаряд ИБП: <b>{charge} %</b>\nНагрузка: <b>{load}</b> %"
 
 
 
