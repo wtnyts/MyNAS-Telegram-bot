@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 from config import ALLOWED_USER_IDs, TELEGRAM_TOKEN
-#from modules.Classes import Disk, Server, UPS
+from modules.Classes import Disk, Server, UPS
 
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
