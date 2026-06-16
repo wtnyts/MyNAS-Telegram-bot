@@ -112,7 +112,7 @@ def disks(message):
         else None
     )
     hdd_wd_6tb_used = (
-        hdd_wd_6tb_total - hdd_toshiba_free
+        hdd_wd_6tb_total - hdd_wd_6tb_free
         if (hdd_wd_6tb_total is not None and hdd_wd_6tb_free is not None)
         else None
     )
