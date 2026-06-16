@@ -84,6 +84,8 @@ def disks(message):
     )
     hdd_toshiba_free = 'node_filesystem_avail_bytes{mountpoint="/media/toshiba_650"} / 1024 / 1024 / 1024'
     hdd_toshiba_total = 'node_filesystem_size_bytes{mountpoint="/media/toshiba_650"} / 1024 / 1024 / 1024'
+    hdd_wd_6tb_free = 'node_filesystem_avail_bytes{mountpoint="/media/wd_6tb"} / 1024 / 1024 / 1024'
+    hdd_wd_6tb_total = 'node_filesystem_size_bytes{mountpoint="/media/wd_6tb"} / 1024 / 1024 / 1024'
 
     root_free = get_prometheus_metric(root_free)
     root_total = get_prometheus_metric(root_total)
@@ -91,6 +93,8 @@ def disks(message):
     docker_total = get_prometheus_metric(docker_total)
     hdd_toshiba_free = get_prometheus_metric(hdd_toshiba_free)
     hdd_toshiba_total = get_prometheus_metric(hdd_toshiba_total)
+    hdd_wd_6tb_free = get_prometheus_metric(hdd_wd_6tb_free)
+    hdd_wd_6tb_total = get_prometheus_metric(hdd_toshiba_total)
 
     root_used = (
         root_total - root_free
@@ -105,6 +109,11 @@ def disks(message):
     hdd_toshiba_used = (
         hdd_toshiba_total - hdd_toshiba_free
         if (hdd_toshiba_total is not None and hdd_toshiba_free is not None)
+        else None
+    )
+    hdd_wd_6tb_used = (
+        hdd_wd_6tb_total - hdd_toshiba_free
+        if (hdd_wd_6tb_total is not None and hdd_wd_6tb_free is not None)
         else None
     )
 
@@ -135,8 +144,9 @@ def disks(message):
     total += format_string("Docker", docker_used, docker_free, docker_total)
     total += "\n<b>HDD</b>:\n"
     total += format_string(
-        "Toshiba 650", hdd_toshiba_used, hdd_toshiba_free, hdd_toshiba_total
+        "Toshiba 650 Gb", hdd_toshiba_used, hdd_toshiba_free, hdd_toshiba_total
     )
+    total += format_string("WD 6 Tb", hdd_wd_6tb_used, hdd_wd_6tb_free, hdd_toshiba_total)
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
 
