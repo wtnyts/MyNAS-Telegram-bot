@@ -100,8 +100,10 @@ class Server:
         return f"RAM: <b>{self.ram_query:.1f}</b> %"
     
     def format(self):
-        return self.get_cpu() + self.get_ram()
-    
+        name = self.name
+        cpu = self.get_cpu()
+        ram = self.get_ram()
+        return name, cpu, ram
 
 
 class UPS:
@@ -163,8 +165,14 @@ def server(message):
     bot.send_chat_action(message.chat.id, "typing")
 
     server_1 = Server("MyNAS")
+    total = f"Статус <b>сервера</b>:\n\n"
+    name, cpu, ram = server_1.format()
+    
+    total = f"Статус сервера <b>{name}</b>:\n\n"
+    total += cpu
+    total += ram
 
-    bot.send_message(message.chat.id, server_1.format(), parse_mode="HTML")
+    bot.send_message(message.chat.id, ram, parse_mode="HTML")
 
 
 
