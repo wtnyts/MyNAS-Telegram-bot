@@ -63,7 +63,7 @@ def disks(message):
     total = "Статус дисков: \n\nSSD:\n"
     total += root.format()
     total += docker.format()
-    total += "\n\nHDD:\n"
+    total += "\nHDD:\n"
 #    total += toshiba_650.format()
     total += wd_6tb.format()
     total += wd_1tb_media.format()
