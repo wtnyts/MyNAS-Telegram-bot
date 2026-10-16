@@ -56,15 +56,17 @@ def disks(message):
     docker = Disk('Docker', '/var/lib/docker')
 
 #HDD
-    toshiba_650 = Disk("Toshiba 650 Gb", '/media/toshiba_650')
+#   toshiba_650 = Disk("Toshiba 650 Gb", '/media/toshiba_650')
     wd_6tb = Disk('WD 6 Tb', "/media/wd_6tb")
+    wd_1tb_media = Disk('WD 1 Tb Media', "/media/wd1tb_media")
 
     total = "Статус дисков: \n\nSSD:\n"
     total += root.format()
     total += docker.format()
     total += "\n\nHDD:\n"
-    total += toshiba_650.format()
+#    total += toshiba_650.format()
     total += wd_6tb.format()
+    total += wd_1tb_media.format()
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
 
