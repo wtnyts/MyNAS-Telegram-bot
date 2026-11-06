@@ -5,6 +5,7 @@ from modules.Classes import Disk, Server, UPS, home_todo
 
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
+user_state = {}
 
 
 def restricted(func):
@@ -58,7 +59,8 @@ def server_keyboard_message(message):
 
 @bot.message_handler(func=lambda message: message.text == "Дела")
 @restricted
-def server_keyboard_message(message):
+def todo_keyboard_message(message):
+    user_state[message.from_user.id] = None
     bot.send_message(message.chat.id, "Выберите действие", reply_markup=todo_keyboard())
 
 @bot.message_handler(func=lambda message: message.text == "Назад")
@@ -75,6 +77,27 @@ def todo(message):
     total = text.format()
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
+
+@bot.message_handler(func=lambda message: message.text == "Добавить")
+@restricted
+def add_todo_start(message):
+    user_state[message.from_user.id] = "adding"
+    bot.send_message(message.chat.id, "Введи текст:")
+
+
+@bot.message_handler(func=lambda message: message.text == "Удалить")
+@restricted
+def delete_todo_start(message):
+    todo_obj = home_todo("random_todo")
+    items = todo_obj.all()
+    if not items:
+        bot.send_message(message.chat.id, "Список дел пуст.")
+        return
+    lines = ["Выбери номер дела для удаления:\n"]
+    for i, item in enumerate(items, start=1):
+        lines.append(f"{i}. {item}")
+    user_state[message.from_user.id] = "deleting"
+    bot.send_message(message.chat.id, "\n".join(lines))
 
 
 @bot.message_handler(func=lambda message: message.text == "CPU/RAM")
@@ -121,6 +144,36 @@ def ups(message):
     total = ups_1.format()
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
+
+
+@bot.message_handler(func=lambda message: True, content_types=["text"])
+@restricted
+def handle_text_input(message):
+    state = user_state.get(message.from_user.id)
+
+    if state == "adding":
+        text = message.text.strip()
+        if not text:
+            bot.send_message(message.chat.id, "Пустое сообщение.")
+            return
+        todo_obj = home_todo("random_todo")
+        todo_obj.add(text)
+        user_state[message.from_user.id] = None
+        bot.send_message(message.chat.id, f"✅ Добавлено: {text}", reply_markup=todo_keyboard())
+
+    elif state == "deleting":
+        text = message.text.strip()
+        if not text.isdigit():
+            bot.send_message(message.chat.id, "Введи номер из списка.")
+            return
+        index = int(text) - 1
+        todo_obj = home_todo("random_todo")
+        removed = todo_obj.delete(index)
+        user_state[message.from_user.id] = None
+        if removed is None:
+            bot.send_message(message.chat.id, "Нет дела с таким номером.")
+        else:
+            bot.send_message(message.chat.id, f"Удалено: {removed}", reply_markup=todo_keyboard())
 
 
 
