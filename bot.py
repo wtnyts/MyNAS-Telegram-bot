@@ -83,10 +83,7 @@ def todo(message):
 @restricted
 def add_todo_start(message):
     user_state[message.from_user.id] = "adding"
-    bot.send_message(
-        message.chat.id, 
-        "Введи текст:", 
-        reply_markup=types.ForceReply(selective=True)
+    bot.reply_to(message, "Введи текст:")
     )
 
 
@@ -102,11 +99,7 @@ def delete_todo_start(message):
     for i, item in enumerate(items, start=1):
         lines.append(f"{i}. {item}")
     user_state[message.from_user.id] = "deleting"
-    bot.send_message(
-        message.chat.id, 
-        "\n".join(lines), 
-        reply_markup=types.ForceReply(selective=True)
-    )
+    bot.reply_to(message, "\n".join(lines))
 
 
 @bot.message_handler(func=lambda message: message.text == "CPU/RAM")
