@@ -82,6 +82,7 @@ def todo(message):
 @restricted
 def add_todo_start(message):
     user_state[message.from_user.id] = "adding"
+    print(f"DEBUG set adding for {message.from_user.id}")
     bot.send_message(message.chat.id, "Введи текст:")
 
 
@@ -150,7 +151,7 @@ def ups(message):
 @restricted
 def handle_text_input(message):
     state = user_state.get(message.from_user.id)
-
+    print(f"DEBUG state={state} text={message.text}") 
     if state == "adding":
         text = message.text.strip()
         if not text:
@@ -159,7 +160,7 @@ def handle_text_input(message):
         todo_obj = home_todo("random_todo")
         todo_obj.add(text)
         user_state[message.from_user.id] = None
-        bot.send_message(message.chat.id, f"✅ Добавлено: {text}", reply_markup=todo_keyboard())
+        bot.send_message(message.chat.id, f"Добавлено: {text}", reply_markup=todo_keyboard())
 
     elif state == "deleting":
         text = message.text.strip()
