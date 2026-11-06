@@ -52,9 +52,6 @@ def server_keyboard():
 def start(message):
     bot.send_message(message.chat.id, "Выберите действие", reply_markup=main_keyboard())
 
-@bot.message_handler(func=lambda message: True)
-def debug_all_messages(message):
-    print(f"DEBUG: ANY MESSAGE from {message.from_user.id}: text={message.text!r}")
 
 @bot.message_handler(func=lambda message: message.text == "Сервер")
 @restricted
