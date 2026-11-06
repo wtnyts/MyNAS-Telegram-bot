@@ -84,7 +84,6 @@ def todo(message):
 def add_todo_start(message):
     user_state[message.from_user.id] = "adding"
     bot.reply_to(message, "Введи текст:")
-    )
 
 
 @bot.message_handler(func=lambda message: message.text == "Удалить")
