@@ -20,21 +20,38 @@ def restricted(func):
 def main_keyboard():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
     button1 = types.KeyboardButton("Сервер")
+    button2 = types.KeyboardButton("Дела")
+
+    markup.add(button1, button2)
+    return markup
+
+
+def server_keyboard():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
+    button1 = types.KeyboardButton("CPU/RAM")
     button2 = types.KeyboardButton("Диски")
     button3 = types.KeyboardButton("ИБП")
 
     markup.add(button1, button2, button3)
     return markup
 
-
 @bot.message_handler(commands=["start"])
 @restricted
 def start(message):
     bot.send_message(message.chat.id, "Выберите действие", reply_markup=main_keyboard())
 
+@bot.message_handler(func=lambda message: message.text == "Дела")
+@restricted
+def server(message):
+    bot.send_chat_action(message.chat.id, "typing")
+
+    home_todo = home_todo("random_todo")
+    total = home_todo.format()
+
+    bot.send_message(message.chat.id, total, parse_mode="HTML")
 
 
-@bot.message_handler(func=lambda message: message.text == "Сервер")
+@bot.message_handler(func=lambda message: message.text == "CPU/RAM")
 @restricted
 def server(message):
     bot.send_chat_action(message.chat.id, "typing")
