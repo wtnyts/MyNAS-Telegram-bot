@@ -56,8 +56,8 @@ def back_to_main_keyboard(message):
 def todo(message):
     bot.send_chat_action(message.chat.id, "typing")
 
-    todo = home_todo("random_todo")
-    total = home_todo.format()
+    text = home_todo("random_todo")
+    total = text.format()
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
 
