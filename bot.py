@@ -83,8 +83,11 @@ def todo(message):
 @restricted
 def add_todo_start(message):
     user_state[message.from_user.id] = "adding"
-    print(f"DEBUG set adding for {message.from_user.id}")
-    bot.send_message(message.chat.id, "Введи текст:")
+    bot.send_message(
+        message.chat.id, 
+        "Введи текст:", 
+        reply_markup=types.ForceReply(selective=True)
+    )
 
 
 @bot.message_handler(func=lambda message: message.text == "Удалить")
@@ -99,7 +102,11 @@ def delete_todo_start(message):
     for i, item in enumerate(items, start=1):
         lines.append(f"{i}. {item}")
     user_state[message.from_user.id] = "deleting"
-    bot.send_message(message.chat.id, "\n".join(lines))
+    bot.send_message(
+        message.chat.id, 
+        "\n".join(lines), 
+        reply_markup=types.ForceReply(selective=True)
+    )
 
 
 @bot.message_handler(func=lambda message: message.text == "CPU/RAM")
@@ -152,7 +159,6 @@ def ups(message):
 @restricted
 def handle_text_input(message):
     state = user_state.get(message.from_user.id)
-    print(f"DEBUG state={state} text={message.text}") 
     if state == "adding":
         text = message.text.strip()
         if not text:
