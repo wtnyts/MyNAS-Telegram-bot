@@ -25,6 +25,16 @@ def main_keyboard():
     markup.add(button1, button2)
     return markup
 
+def todo_keyboard():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
+    button1 = types.KeyboardButton("Выбор")
+    button2 = types.KeyboardButton("Добавить")
+    button3 = types.KeyboardButton("Удалить")
+    button4 = types.KeyboardButton("Назад")
+
+    markup.add(button1, button2, button3, button4)
+    return markup
+
 
 def server_keyboard():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
@@ -46,12 +56,17 @@ def start(message):
 def server_keyboard_message(message):
     bot.send_message(message.chat.id, "Выберите действие", reply_markup=server_keyboard())
 
+@bot.message_handler(func=lambda message: message.text == "Дела")
+@restricted
+def server_keyboard_message(message):
+    bot.send_message(message.chat.id, "Выберите действие", reply_markup=todo_keyboard())
+
 @bot.message_handler(func=lambda message: message.text == "Назад")
 @restricted
 def back_to_main_keyboard(message):
     bot.send_message(message.chat.id, "Выберите действие", reply_markup=main_keyboard())
 
-@bot.message_handler(func=lambda message: message.text == "Дела")
+@bot.message_handler(func=lambda message: message.text == "Выбор")
 @restricted
 def todo(message):
     bot.send_chat_action(message.chat.id, "typing")
