@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 from config import ALLOWED_USER_IDs, TELEGRAM_TOKEN
-from modules.Classes import Disk, Server, UPS
+from modules.Classes import Disk, Server, UPS, home_todo
 
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
@@ -31,8 +31,9 @@ def server_keyboard():
     button1 = types.KeyboardButton("CPU/RAM")
     button2 = types.KeyboardButton("Диски")
     button3 = types.KeyboardButton("ИБП")
+    button4 = types.KeyboardButton("Назад")
 
-    markup.add(button1, button2, button3)
+    markup.add(button1, button2, button3, button4)
     return markup
 
 @bot.message_handler(commands=["start"])
@@ -40,12 +41,22 @@ def server_keyboard():
 def start(message):
     bot.send_message(message.chat.id, "Выберите действие", reply_markup=main_keyboard())
 
+@bot.message_handler(func=lambda message: message.text == "Сервер")
+@restricted
+def server_keyboard_message(message):
+    bot.send_message(message.chat.id, "Выберите действие", reply_markup=server_keyboard())
+
+@bot.message_handler(func=lambda message: message.text == "Назад")
+@restricted
+def back_to_main_keyboard(message):
+    bot.send_message(message.chat.id, "Выберите действие", reply_markup=main_keyboard())
+
 @bot.message_handler(func=lambda message: message.text == "Дела")
 @restricted
-def server(message):
+def todo(message):
     bot.send_chat_action(message.chat.id, "typing")
 
-    home_todo = home_todo("random_todo")
+    todo = home_todo("random_todo")
     total = home_todo.format()
 
     bot.send_message(message.chat.id, total, parse_mode="HTML")
