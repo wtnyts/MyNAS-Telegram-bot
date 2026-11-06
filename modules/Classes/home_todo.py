@@ -1,9 +1,14 @@
+import random
+
 class home_todo:
     def __init__(self, name):
         self.name = name
 
     def random_todo(self):
-        return('success')
+
+        i = ['Помыться', 'Пожукить', 'Побибиматься']
+        x = random.choice(i)
+        return(x)
 
     def format(self):
         text = self.random_todo()
