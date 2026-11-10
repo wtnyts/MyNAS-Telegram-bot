@@ -41,14 +41,25 @@ if details_text:
 
 url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
-for user_id in USER_IDS.split(','):
-    user_id = user_id.strip()
-    if user_id:
-        payload = {
-            "chat_id": user_id,
-            "text": message
-        }
-        try:
-            requests.post(url, json=payload, timeout=10)
-        except Exception:
-            pass
+# Ищем ID группы (у групп ID отрицательный, например -100123456789)
+group_ids = []
+for chat_id in USER_IDS.split(','):
+    chat_id = chat_id.strip()
+    if chat_id.startswith('-'):
+        group_ids.append(chat_id)
+
+# Если группа не найдена, можно отправить в первый попавшийся ID (или ничего не делать)
+if not group_ids:
+    print("В ALLOWED_USER_IDS не найдено ID группы (начинается с '-'). Уведомление не отправлено.")
+    sys.exit(0)
+
+# Отправляем только в группы
+for chat_id in group_ids:
+    payload = {
+        "chat_id": chat_id,
+        "text": message
+    }
+    try:
+        requests.post(url, json=payload, timeout=10)
+    except Exception:
+        pass
