@@ -24,18 +24,18 @@ try:
     )
     errors = result.stdout.strip()
 except subprocess.CalledProcessError:
-    errors = "Не удалось прочитать логи"
+    errors = "не удалось прочитать логи"
 
 # 3. Определяем причину
 if errors and "No entries" not in errors:
-    reason = "АВАРИЙНАЯ"
+    reason = "АВАРИЙНО"
     details = errors.split('\n')[-3:] # Берем последние 3 строки ошибок
     details_text = "\n".join(details)
 else:
-    reason = "Плановая"
-    details_text = "Логи чистые"
+    reason = "планово"
+    details_text = "не обнаружены"
 
-message = f"Сервер mynas перезагружен.\nПричина: {reason}\nЯдро: {kernel}"
+message = f"Сервер MyNAS перезагружен {reason}"
 if details_text:
     message += f"\n\nПоследние ошибки:\n{details_text}"
 
