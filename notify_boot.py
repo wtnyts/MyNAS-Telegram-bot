@@ -33,9 +33,9 @@ if errors and "No entries" not in errors:
     details_text = "\n".join(details)
 else:
     reason = "планово"
-    details_text = "не обнаружены"
+    details_text = "не обнаружены."
 
-message = f"Сервер MyNAS перезагружен {reason}"
+message = f"Сервер MyNAS перезагружен {reason}."
 if details_text:
     message += f"\n\nПоследние ошибки:\n{details_text}"
 
